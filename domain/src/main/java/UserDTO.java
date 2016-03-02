@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ public class UserDTO {
 
     private String username ;
     private Set<UserDTO> followers;
-    private List <String> messages;
+    private List <MessageDTO> messages;
 
     public UserDTO(String username) {
         this.username = username;
@@ -50,11 +51,11 @@ public class UserDTO {
         this.followers = followers;
     }
 
-    public List<String> getMessages() {
+    public List<MessageDTO> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<String> messages) {
+    public void setMessages(List<MessageDTO> messages) {
         this.messages = messages;
     }
 
@@ -63,5 +64,11 @@ public class UserDTO {
         if(getFollowers()==null)
             setFollowers(new HashSet<>());
             getFollowers().add(userDTO);
+    }
+
+    public void addMessage (String message){
+        if(getMessages() == null)
+            setMessages(new LinkedList<>());
+        getMessages().add(new MessageDTO(message));
     }
 }
