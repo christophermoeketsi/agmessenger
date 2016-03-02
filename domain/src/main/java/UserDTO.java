@@ -1,7 +1,5 @@
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by chris on 2016/03/02.
@@ -9,7 +7,7 @@ import java.util.Set;
 public class UserDTO {
 
     private String username ;
-    private Set<UserDTO> followers;
+    private List<UserDTO> followers;
     private List <MessageDTO> messages;
 
     public UserDTO(String username) {
@@ -43,11 +41,11 @@ public class UserDTO {
         this.username = username;
     }
 
-    public Set<UserDTO> getFollowers() {
+    public List<UserDTO> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(Set<UserDTO> followers) {
+    public void setFollowers(List<UserDTO> followers) {
         this.followers = followers;
     }
 
@@ -62,13 +60,22 @@ public class UserDTO {
 
     public void addFollower (UserDTO userDTO){
         if(getFollowers()==null)
-            setFollowers(new HashSet<>());
+            setFollowers(new AGMessengerList<UserDTO>());
             getFollowers().add(userDTO);
     }
 
     public void addMessage (String message){
         if(getMessages() == null)
-            setMessages(new LinkedList<>());
+            setMessages(new LinkedList<MessageDTO>());
         getMessages().add(new MessageDTO(message));
+    }
+
+    public void doDeepCopyOfFollers(UserDTO userDTO){
+        if(userDTO.getFollowers()!=null) {
+            for(UserDTO follower : userDTO.getFollowers()){
+                if(!this.getFollowers().contains(follower))
+                    this.addFollower(follower);
+            }
+        }
     }
 }
