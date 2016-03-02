@@ -12,6 +12,8 @@
         <module>basemessenger</module>
         <module>domain</module>
         <module>fileparserutils</module>
+        <module>MessengerExceptions</module>
+        <module>messengerexceptions</module>
     </modules>
 
 
