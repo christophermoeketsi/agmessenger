@@ -23,7 +23,7 @@ public class FileParser {
         try {
             List<UserDTO> userDTOs = readUsersFromFile(pathToUserFile);
             List<MessageDTO> messageDTOs = readMessegesFromFile(pathToMessageFile);
-            mergeAndLoadMessageAndUserToCache(cachedUser,userDTOs, messageDTOs);
+            mergeAndLoadMessageAndUserToCache(cachedUser, userDTOs, messageDTOs);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -32,23 +32,24 @@ public class FileParser {
 
 
     private void mergeAndLoadMessageAndUserToCache(Hashtable<String, UserDTO> cachedUser, List<UserDTO> userDTOs, List<MessageDTO> messageDTOs) {
-        for(UserDTO userDTO  :userDTOs) {
+        for (UserDTO userDTO : userDTOs) {
             cachedUser.put(userDTO.getUsername(), userDTO);
         }
 
-        for(UserDTO userDTO : cachedUser.values()) {
-            for (int index  =0; index < userDTO.getFollowers().size(); index++) {
-                UserDTO follower  = userDTO.getFollowers().get(index);
-                if(cachedUser.contains(follower)) {
-                    follower = cachedUser.get(follower.getUsername());
+        for (UserDTO userDTO : cachedUser.values()) {
+            for (int index = 0; index < userDTO.getFollowers().size(); index++) {
+                UserDTO follower = userDTO.getFollowers().get(index);
+                if (cachedUser.contains(follower)) {
+                    userDTO.getFollowers().remove(index); //remove the old user
+                    userDTO.getFollowers().add(index, cachedUser.get(follower.getUsername())); //reference one that is cache already
                 }
             }
         }
-        for (MessageDTO messageDTO :messageDTOs) {
-            UserDTO currentUser  = cachedUser.get(messageDTO.getUserName());
-            if(currentUser !=null) {//This is do that messages that don't have users are ignored
+        for (MessageDTO messageDTO : messageDTOs) {
+            UserDTO currentUser = cachedUser.get(messageDTO.getUserName());
+            if (currentUser != null) {//This is do that messages that don't have users are ignored
                 currentUser.addMessage(messageDTO);
-                for  (UserDTO follower : currentUser.getFollowers()) {
+                for (UserDTO follower : currentUser.getFollowers()) {
                     follower.addMessage(messageDTO);
                 }
             }
