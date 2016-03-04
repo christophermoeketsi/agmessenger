@@ -14,7 +14,8 @@ public class LineValidator {
         return INSTANCE;
     }
 
-    public  static boolean  isValidUserLine(String line, int currentLineNumber) throws LineFormatException {
+
+    public static boolean isValidUserLine(String line, int currentLineNumber) throws LineFormatException {
         return (hasFollows(line, currentLineNumber) && (hasValidNameAndFollower(line, currentLineNumber)));
     }
 
@@ -63,6 +64,27 @@ public class LineValidator {
         } catch (Exception e) {
             if (e instanceof LineFormatException)
                 throw (LineFormatException) e;
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+
+    public boolean isValidMessageLine(String line, int currentLineNumber) throws MessageLineException  {
+        return checkMessageDeilimator(line, currentLineNumber);
+    }
+
+    private boolean checkMessageDeilimator(String line, int currentLineNumber) throws MessageLineException {
+        try {
+            String messageLineArray[] = line.split(">");
+            if (messageLineArray.length < 2) {
+                throw new MessageLineException("There was an error reading line " +
+                        line + ": \nLine number " + currentLineNumber +
+                        "A message should be delineated by \">\" and should be of the from User_Name  > message");
+            }
+        } catch (Exception e) {
+            if (e instanceof MessageLineException)
+                throw (MessageLineException) e;
             throw new RuntimeException(e);
         }
         return true;

@@ -67,7 +67,7 @@ public class UserDTO {
     public void addMessage (String message){
         if(getMessages() == null)
             setMessages(new LinkedList<MessageDTO>());
-        getMessages().add(new MessageDTO(message));
+        getMessages().add(new MessageDTO(this.getUsername(),message));
     }
 
     public void doDeepCopyOfFollers(UserDTO userDTO){

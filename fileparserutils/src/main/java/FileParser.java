@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by chris on 2016/03/02.
@@ -39,10 +38,27 @@ public class FileParser {
         }
     }
 
-    /*Ward follows Alan*/
-    public Set<UserDTO> readMessegesFromFile() {
+    //This method is used to parse the message file
+    public List<MessageDTO> readMessegesFromFile(String messageFilePath) {
         try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(messageFilePath));
 
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public MessageDTO parseMessageLine(String line, int currentLineNumber) {
+        try {
+            if (LineValidator.INSTANCE.isValidMessageLine(line, currentLineNumber)) {
+                int fristIndexOfDeliminator = line.indexOf(">");
+                String userName = line.substring(0, fristIndexOfDeliminator).trim();
+                String message = line.substring(fristIndexOfDeliminator+1, line.length());
+                MessageDTO messageDTO = new MessageDTO(userName, message);
+                return messageDTO;
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
