@@ -18,32 +18,16 @@ public class BaseMessenger {
     public BaseMessenger() {
     }
 
-    public boolean readUsers(String pathToFile) {
-
-        return true;
-    }
-
-    public Map<String, UserDTO> getCachedUsers() {
+    public  Map<String,UserDTO> getCachedUsers (){
         return cachedUsers;
     }
 
-    public void addUserToCache(UserDTO userDTO) {
-        if (getCachedUsers().containsValue(userDTO)) {
-            UserDTO cachedUser = getCachedUsers().get(userDTO.getUsername());
-            cachedUser.doDeepCopyOfFollers(userDTO);
-        } else {
-            getCachedUsers().put(userDTO.getUsername(), userDTO);
-        }
-    }
-
-    public void addUserFromFile(String pathToFile) {
-        try {
-            List<UserDTO> usersFromFile = FileParser.INSTANCE.readUsersFromFile(pathToFile);
-            for (UserDTO userFromFile : usersFromFile) {
-                addUserToCache(userFromFile);
+    public void printCache(){
+        for(String userName  : cachedUsers.keySet()) {
+            System.out.println("@" + userName);
+            for (MessageDTO messageDTO : cachedUsers.get(userName).getMessages()) {
+                System.out.println("\t @"  + messageDTO.getUserName() + " " + messageDTO.getMessage());
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }
