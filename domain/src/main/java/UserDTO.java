@@ -42,6 +42,8 @@ public class UserDTO {
     }
 
     public List<UserDTO> getFollowers() {
+        if(followers == null)
+            followers  = new AGMessengerList<UserDTO>();
         return followers;
     }
 
@@ -64,10 +66,10 @@ public class UserDTO {
             getFollowers().add(userDTO);
     }
 
-    public void addMessage (String message){
+    public void addMessage (MessageDTO message){
         if(getMessages() == null)
             setMessages(new LinkedList<MessageDTO>());
-        getMessages().add(new MessageDTO(this.getUsername(),message));
+        getMessages().add(message);
     }
 
     public void doDeepCopyOfFollers(UserDTO userDTO){

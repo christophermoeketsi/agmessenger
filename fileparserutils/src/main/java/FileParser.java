@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,6 +17,42 @@ public class FileParser {
         if (INSTANCE == null)
             INSTANCE = new FileParser();
         return INSTANCE;
+    }
+
+    public void readUsersAndMessages(Hashtable<String, UserDTO> cachedUser, String pathToUserFile, String pathToMessageFile) {
+        try {
+            List<UserDTO> userDTOs = readUsersFromFile(pathToUserFile);
+            List<MessageDTO> messageDTOs = readMessegesFromFile(pathToMessageFile);
+            mergeAndLoadMessageAndUserToCache(cachedUser,userDTOs, messageDTOs);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    private void mergeAndLoadMessageAndUserToCache(Hashtable<String, UserDTO> cachedUser, List<UserDTO> userDTOs, List<MessageDTO> messageDTOs) {
+        for(UserDTO userDTO  :userDTOs) {
+            cachedUser.put(userDTO.getUsername(), userDTO);
+        }
+
+        for(UserDTO userDTO : cachedUser.values()) {
+            for (int index  =0; index < userDTO.getFollowers().size(); index++) {
+                UserDTO follower  = userDTO.getFollowers().get(index);
+                if(cachedUser.contains(follower)) {
+                    follower = cachedUser.get(follower.getUsername());
+                }
+            }
+        }
+        for (MessageDTO messageDTO :messageDTOs) {
+            UserDTO currentUser  = cachedUser.get(messageDTO.getUserName());
+            if(currentUser !=null) {//This is do that messages that don't have users are ignored
+                currentUser.addMessage(messageDTO);
+                for  (UserDTO follower : currentUser.getFollowers()) {
+                    follower.addMessage(messageDTO);
+                }
+            }
+        }
     }
 
     public List<UserDTO> readUsersFromFile(String pathToFile) {
@@ -40,14 +78,21 @@ public class FileParser {
 
     //This method is used to parse the message file
     public List<MessageDTO> readMessegesFromFile(String messageFilePath) {
+        List<MessageDTO> messageDTOs = new LinkedList<MessageDTO>();
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(messageFilePath));
-
-
+            String messageLine = bufferedReader.readLine();
+            int currentMessageLine = 0;
+            while (messageLine != null) {
+                MessageDTO messageDTO = parseMessageLine(messageLine, currentMessageLine);
+                currentMessageLine++;
+                messageLine = bufferedReader.readLine();
+                messageDTOs.add(messageDTO);
+            }
+            return messageDTOs;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     public MessageDTO parseMessageLine(String line, int currentLineNumber) {
@@ -55,7 +100,7 @@ public class FileParser {
             if (LineValidator.INSTANCE.isValidMessageLine(line, currentLineNumber)) {
                 int fristIndexOfDeliminator = line.indexOf(">");
                 String userName = line.substring(0, fristIndexOfDeliminator).trim();
-                String message = line.substring(fristIndexOfDeliminator+1, line.length());
+                String message = line.substring(fristIndexOfDeliminator + 1, line.length());
                 MessageDTO messageDTO = new MessageDTO(userName, message);
                 return messageDTO;
             }
@@ -72,7 +117,6 @@ public class FileParser {
                 String[] lineArray = line.split("follows");
                 String followerName = lineArray[0].trim();
                 String userNames = lineArray[1].trim();
-
                 if (userNames.trim().contains(",")) {
                     addMulipleUsers(userNames, followerName, userDTOList);
                 } else {

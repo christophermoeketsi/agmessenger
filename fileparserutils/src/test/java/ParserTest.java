@@ -1,6 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -64,6 +65,25 @@ public class ParserTest {
         Assert.assertEquals(">>>>>>123", messageDTO.getMessage());
     }
 
+
+    @Test
+    public void tesMultipletMessageLineParsing() {
+        String pathToFile  = "/home/chris/workspace/git/agmessenger/fileparserutils/src/test/test_files/messageLineTestFile";
+        List<MessageDTO >  messageDTOs = FileParser.INSTANCE.readMessegesFromFile(pathToFile);
+        Assert.assertEquals(3,messageDTOs.size());
+    }
     //==================================This is where they start =============================================
+
+    //This test the loading of the user and the messages into the cache
+    //==================================This is where they start =============================================
+
+    @Test
+    public void testLoadingToCache () {
+        Hashtable<String, UserDTO> cache  = new Hashtable<String, UserDTO>();
+        String pathToUserFile = "/home/chris/workspace/git/agmessenger/fileparserutils/src/test/test_files/followersTestFile";
+        String pathToMessageFile = "/home/chris/workspace/git/agmessenger/fileparserutils/src/test/test_files/messageLineTestFile";
+        FileParser.INSTANCE.readUsersAndMessages(cache, pathToUserFile, pathToMessageFile);
+        Assert.assertEquals(4,cache.size());
+    }
 
 }
