@@ -19,6 +19,29 @@
     <build>
         <pluginManagement>
             <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>1.4</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <finalName>org.agmessenger-shaded</finalName>
+                                <artifactSet>
+                                    <includes>
+                                        <include>net.sf.buildbox:*</include>
+                                    </includes>
+                                </artifactSet>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -40,6 +63,12 @@
 
         <dependency>
             <groupId>org.agmessenger</groupId>
+            <artifactId>basemessenger</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.agmessenger</groupId>
             <artifactId>fileparserutils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -49,13 +78,8 @@
             <artifactId>domain</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.agmessenger</groupId>
-            <artifactId>basemessenger</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
+
 
 
 </project>
