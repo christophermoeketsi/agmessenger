@@ -3,7 +3,7 @@ import java.util.Hashtable;
 /**
  * Created by chris on 2016/03/05.
  */
-public class Mian {
+public class Main {
 
     public static void main(String args[]) {
 
