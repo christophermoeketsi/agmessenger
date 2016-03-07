@@ -37,6 +37,10 @@ Alan
 
 @Alan: Random numbers should not be generated with a method chosen at random.​
 
+
+
+*******************Comments on the application ***********************
+
 Assumptions that were made when making the application .
 The application is not persistent - and therefore has not concept of history or state at
 this given point in time .
@@ -47,3 +51,19 @@ Improvements that I wanted to make to the application
     Introduce multitheading to load the messages and the users (This is why I used a hashtable to store the cached users)
     Finally use websockets to, push and pull messages
 
+*******************Installing and packaging the application ***********************
+1) cd rootofapplication/common-all
+2) mvn package -DskipTests;
+
+you should get a target folder
+3) cd target
+
+java -jar original-common-all-1.0-SNAPSHOT.jar -u path_to_follower_file -m path_to_message_file
+
+
+             ----------------------------------OR ----------------------------------------
+
+
+There is a bin folder in the root
+
+java -jar original-common-all-1.0-SNAPSHOT.jar -u path_to_follower_file -m path_to_message_file
